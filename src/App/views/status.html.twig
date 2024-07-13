@@ -1,0 +1,266 @@
+{% extends 'layout.html.twig' %}
+
+{% block content %}
+
+    <h2 id="statusTitle">Results</h2>
+
+    <div id="tasksList">
+
+        {% for task in tasks %}
+        <div data-id="{{ task.id }}" class="task {% if task.isDone %}done{% elseif task.status > 0 or task.status == -1 %}active{% else %}awaiting{% endif %}">
+
+            <div class="content">
+
+                <div class="page">
+                    <div class="photo">
+                        <img alt="{{ task.data.name }}" src="{{ task.data.picture }}">
+                    </div>
+                    <div class="data">
+                        <span class="title">
+                            <a href="https://facebook.com/{{ task.page_id }}" target="_blank">
+                                {{ task.data.name }}
+                            </a>
+                        </span>
+                        <span class="cat">{{ task.data.category }}</span>
+                        <span class="stats">{{ task.data.likes }} people like this</span>
+                    </div>
+                </div>
+
+                <div class="action">
+                    {% if task.isDone and task.emails_count > 0 %}
+                        <a href="{{ path('download', {'id': task.id}) }}" class="btn btn-darkgreen btn-3d download">Download</a>
+                    {% elseif task.isDone and task.emails_count == 0 %}
+                        No posts
+                    {% elseif task.status == 1 %}
+                        <span class="text">Preparing...</span>
+                    {% elseif task.status == 2 %}
+                        <span class="text">Processing...</span>
+                    {% elseif task.status == 3 %}
+                        <span class="text">Finishing...</span>
+                    {% elseif task.status == -1 and task.emails_count > 0 %}
+                        <a href="{{ path('download', {'id': task.id}) }}" class="btn btn-darkgreen btn-3d download">Download</a>
+                    {% elseif task.status == -1 and task.emails_count == 0 %}
+                        No posts so far
+                    {% else %}
+                        Awaiting
+                    {% endif %}
+                </div>
+
+                <div class="status">
+                    <a href="javascript:;" class="btn btn-lightblue icon-big-cross delete"></a>
+                    <a href="javascript:;" class="btn btn-gray btn-3d delete-confirm">Confirm</a>
+                    <span class="text">
+                    {% if task.status is defined and task.status == 2 %}
+                        Processing post <span class="current">{{ task.posts_processed_count }}</span>/<span class="total">{{ task.posts_count }}</span>
+                    {% elseif task.status == -1 %}
+                        Limit Reached
+                    {% endif %}
+                    </span>
+                </div>
+
+            </div>
+
+        </div>
+        {% endfor %}
+
+    </div>
+
+    <div id="afterTasks">
+
+        <a href="{{ path('home') }}" class="btn btn-green btn-3d new-search">New Search</a>
+
+    </div>
+
+{% endblock %}
+
+{% block closing_scripts %}
+    <script src="{{ app.request.basePath }}/js/jquery-ui.min.js"></script>
+    <script>
+        var tasksList = $('#tasksList');
+        var task = $('.task');
+        var firstTask = $('.task:not(.done):not(.active):first');
+        var pollingTime = {{ fs.polling_time }};
+
+        var generateDownloadBtn = function(id) {
+            var dlLink = '{{ path('download', {'id': 'task_id'}) }}';
+            dlLink = dlLink.replace('task_id', id);
+            return $(document.createElement('a')).addClass('btn btn-darkgreen btn-3d download')
+                            .attr('href', dlLink)
+                            .attr('target', '_blank')
+                            .text('Download');
+        };
+
+        var updateTask = function(task) {
+            if(firstTask.data('id') == task.id && task.status < 2 && task.status != -1) {
+                return;
+            }
+
+            var box = tasksList.find('.task[data-id="'+ task.id +'"]');
+
+            if(box.hasClass('deleting') || box.hasClass('done'))
+                return;
+
+            var actionBox = box.find('.action');
+            var statusBox = box.find('.status');
+            var statusText = statusBox.find('span.text');
+
+            if(task.status > 0) {
+                if(box.hasClass('awaiting')) {
+                    box.removeClass('awaiting').addClass('active');
+                }
+            } else if(box.hasClass('active') && task.status == undefined) {
+                box.removeClass('active').addClass('done');
+            }
+
+            if(task.status == undefined) {
+                if(task.emails_count != undefined && task.emails_count > 0) {
+                    actionBox.html(generateDownloadBtn(task.id));
+                } else {
+                    actionBox.text('No posts');
+                }
+
+                statusText.text('');
+            } else if(task.status == 1) {
+                actionBox.html(
+                    $(document.createElement('span')).addClass('text')
+                        .text('Preparing...')
+                );
+
+                statusText.text('');
+
+            } else if(task.status == 2) {
+                actionBox.html(
+                        $(document.createElement('span')).addClass('text')
+                                .text('Processing...')
+                );
+
+                if(statusText.find('span.current').length == 0) {
+                    statusText.html('').append(
+                            'Processing post ',
+                            $(document.createElement('span')).addClass('current'),
+                            '/',
+                            $(document.createElement('span')).addClass('total')
+                    );
+                }
+
+                statusText.find('span.current').text(task.posts_processed_count);
+                statusText.find('span.total').text(task.posts_count);
+
+            } else if(task.status == 3) {
+                actionBox.html(
+                        $(document.createElement('span')).addClass('text')
+                                .text('Finishing...')
+                );
+
+                statusText.text('');
+
+            } else if(task.status == 0) {
+                actionBox.text('Awaiting');
+                statusText.text('');
+
+            } else if(task.status == -1) {
+                if(task.emails_count == 0) {
+                    actionBox.text('No posts so far');
+                } else {
+                    actionBox.html(generateDownloadBtn(task.id));
+                }
+
+                statusText.text('Limit Reached');
+
+                $.fn.SimpleModal({
+                    hideHeader: true,
+                    closeButton: false,
+                    model: 'alert',
+                    contents: 'Facebook API limit reached. Please wait 10 minutes for limit renewal...'
+                }).showModal();
+
+                pollingTime = (60 * 10 + 30) * 1000;
+            }
+
+            if(tasksList.find('.active').length == 0) {
+                firstTask = $('.task:not(.done):not(.active):first');
+                firstTask.addClass('active').find('div.action').html(
+                        $(document.createElement('span')).addClass('text')
+                                .text('Preparing...')
+                );
+            }
+        };
+
+        var updateTasks = function() {
+
+            $.ajax({
+                type: 'GET',
+                url: '{{ path('ajax_status') }}',
+                dataType: 'json',
+                success: function(d) {
+                    if(d.code == 200) {
+                        pollingTime = {{ fs.polling_time }};
+
+                        $.each(d.data, function(i, page) {
+                            updateTask(page);
+                        });
+
+                        setTimeout(updateTasks, pollingTime);
+                    }
+                },
+                error: function() {
+                    setTimeout(updateTasks, pollingTime);
+                }
+            });
+
+        };
+
+        var deleteTask = function(id) {
+            var task = tasksList.find('.task[data-id="'+ id +'"]');
+
+            task.css({ opacity: 0, transition: 'opacity 0.5s' }).slideUp(350);
+
+            $.ajax({
+                type: 'POST',
+                url: '{{ path('ajax_delete_task') }}',
+                dataType: 'json',
+                data: { id: id },
+                success: function(d) {
+                    if(d.code == 200) {
+                        task.remove();
+                    }
+                }/*,
+                error: function() {
+                    task.css({ opacity: 1 }).slideDown();
+                }*/
+            });
+
+        };
+
+        $(function() {
+
+            updateTasks();
+
+            task.delegate('.btn.delete', 'click', function() {
+                var task = $(this).closest('.task');
+                var statusBox = task.find('div.status');
+
+                statusBox.find('.btn.delete-confirm').fadeIn(250).css('display', 'inline-block');
+                statusBox.find('span.text').hide();
+                task.addClass('deleting');
+            });
+
+            task.on('mouseleave', function() {
+                $(this).find('.btn.delete-confirm').hide();
+                $(this).closest('.task').removeClass('deleting');
+                $(this).find('div.status span.text').show();
+            });
+
+            task.delegate('.btn.delete-confirm', 'click', function() {
+                deleteTask($(this).closest('.task').data('id'));
+            });
+
+            if(tasksList.find('.active').length == 0) {
+                firstTask.addClass('active').find('div.action').html(
+                        $(document.createElement('span')).addClass('text')
+                                .text('Preparing...')
+                );
+            }
+        });
+    </script>
+{% endblock %}

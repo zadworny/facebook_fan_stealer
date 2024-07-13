@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en-us">
+    <head>
+        <meta charset="utf-8">
+        <title>{% block title %}Fan Stealer{% endblock %}</title>
+        <link rel="stylesheet" href="{{ app.request.basePath }}/css/normalize.css" type="text/css" />
+        <link rel="stylesheet" href="{{ app.request.basePath }}/css/jquery-ui.css" type="text/css" />
+        <link rel="stylesheet" href="{{ app.request.basePath }}/css/simple-modal.css" type="text/css" />
+        <link rel="stylesheet" href="{{ app.request.basePath }}/css/styles.css" type="text/css" />
+        {% block head %}{% endblock %}
+        <link rel="shortcut icon" href="{{ app.request.basePath }}/favicon.ico" />
+    </head>
+    <body>
+    <div class="navbar">
+        <div class="content">
+            <div class="navbar-logo">
+                Fan Stealer X
+            </div>
+            <ul class="navbar-menu">
+                <li>
+                    <a href="javascript:;">
+                        Settings
+                        <span class="icon icon-settings"></span>
+                    </a>
+                    <div id="settings" class="dropdown box hidden">
+                        <ul class="radio">
+                            <li data-value="default" data-checked="{% if session.selected_app is defined and session.selected_app == 'default' %}1{% else %}0{% endif %}">
+                                <span class="selector"></span>
+                                default app
+                            </li>
+                            <li data-value="myapp" data-checked="{% if session.selected_app is defined and session.selected_app == 'myapp' %}1{% else %}0{% endif %}">
+                                <span class="selector"></span>
+                                my app
+                                <form>
+                                    <div class="form-row">
+                                        <input type="text" id="custom_app_id" placeholder="App ID" class="icon-eye" {% if session.myapp_app_id is defined %}value="{{ session.myapp_app_id }}"{% endif %}>
+                                    </div>
+                                    <div class="form-row">
+                                        <input type="text" id="custom_app_secret" placeholder="App Secret" class="icon-lock" {% if session.myapp_secret is defined %}value="{{ session.myapp_secret }}"{% endif %}>
+                                    </div>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                {% if isLogged is defined and isLogged %}
+                <li>
+                    <a href="javascript:;">
+                        {{ user.name }}
+                        <img src="{{ user.picture.data.url }}" class="user-photo" alt="{{ user.name }}" />
+                    </a>
+                    <div id="logout" class="dropdown box hidden">
+                        <a href="{{ path('logout') }}" class="logout">Logout</a>
+                    </div>
+                </li>
+                {% else %}
+                <li>
+                    <a href="javascript:;">
+                        Login
+                        <span class="icon icon-person"></span>
+                    </a>
+                    <div id="login" class="dropdown box hidden">
+                        <form>
+                            {#
+                            <div class="form-row">
+                                <input type="text" placeholder="Username" class="icon-eye">
+                            </div>
+                            <div class="form-row">
+                                <input type="password" placeholder="Password" class="icon-lock">
+                            </div>
+                            <div class="form-row">
+                                <button type="button" class="btn btn-green">Login</button>
+                            </div>
+                            #}
+                            {% if loginUrl is defined %}
+                            <div class="form-row">
+                                <a href="{{ loginUrl }}" class="btn btn-fb">
+                                    <span class="icon icon-fb"></span>
+                                    Login with Facebook
+                                </a>
+                            </div>
+                            {% endif %}
+                        </form>
+                    </div>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div><!-- /.navbar -->
+
+    <div id="main">
+
+        {% block content %}{% endblock %}
+
+    </div>
+
+        <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+        <script src="{{ app.request.basePath }}/js/simple-modal.js"></script>
+        <script src="{{ app.request.basePath }}/js/bootstrap.js"></script>
+        {% block closing_scripts %}{% endblock %}
+    </body>
+</html>

@@ -1,0 +1,307 @@
+{% extends 'layout.html.twig' %}
+
+{% block content %}
+    <div class="content">
+        <div id="search">
+
+            <div class="tags-field">
+                <div class="icon-input loupe"></div>
+                <div class="tags" id="tags">
+
+                    <input type="text" name="page_search">
+                </div>
+                <div class="box autocomplete" id="pagesAutocomplete">
+                    <ul></ul>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="datepicker">
+
+            <div class="datepickers">
+                <div class="icon-input calendar"></div>
+                <div class="fields">
+                    <input type="text" id="date_from" value="{{ from|date('d/m/Y') }}" placeholder="From">
+                    <div class="separator">-</div>
+                    <input type="text" id="date_to" value="{{ to|date('d/m/Y') }}" placeholder="To">
+                </div>
+            </div>
+
+        </div>
+
+        <div id="searchButton">
+
+            <a href="#" class="btn btn-green btn-3d">Search</a>
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block closing_scripts %}
+    <script src="{{ app.request.basePath }}/js/jquery-ui.min.js"></script>
+    <script>
+        var tags = [];
+
+        var pageSearchField = $('input[name="page_search"]');
+        var autocompleteBox = $('#pagesAutocomplete').find('ul');
+        var tagsField = $('#tags');
+        var datepickers = $('#datepicker');
+        var searchBtn = $('#searchButton').find('a');
+
+        var loadPagesByName = function(name) {
+
+            if(name.length == 0)
+                return;
+
+            autocompleteBox.find('li').remove();
+            autocompleteBox.append($(document.createElement('li')).addClass('text').text('Loading...'));
+
+            autocompleteBox.show();
+
+            $.ajax({
+                type: 'GET',
+                url : '{{ path('ajax_search_page') }}',
+                data: { name: name },
+                dataType: 'json',
+                success: function(res) {
+
+                    autocompleteBox.find('li').remove();
+
+                    if(res.code == 200) {
+                        $.each(res.data, function(i, page) {
+
+                            var li = $(document.createElement('li'))
+                                        .addClass('page')
+                                        .data('id', page.id)
+                                        .data('name', page.name);
+
+                            var photo = $(document.createElement('div')).addClass('photo');
+
+                            photo.append(
+                                $(document.createElement('img'))
+                                    .attr('src', page.picture)
+                                    .attr('alt', page.name)
+                            );
+
+                            var data = $(document.createElement('div')).addClass('data');
+
+                            if(page.name.length > 25)
+                                page.name = page.name.substr(0, 23) + '...';
+
+                            data.append(
+                                $(document.createElement('span'))
+                                    .addClass('title')
+                                    .html(
+                                        $(document.createElement('a'))
+                                                .text(page.name)
+                                                .attr('href', 'https://facebook.com/' + page.id)
+                                                .attr('target', '_blank')
+                                    )
+                            );
+
+                            data.append(
+                                $(document.createElement('span'))
+                                    .addClass('cat')
+                                    .text(page.category)
+                            );
+
+                            data.append(
+                                $(document.createElement('span'))
+                                    .addClass('stats')
+                                    .text(page.likes + ' people like this')
+                            );
+
+                            li.append(photo, data);
+
+                            autocompleteBox.append(li);
+                        });
+                    }
+                    else {
+                        $.fn.SimpleModal({
+                            hideHeader: true,
+                            closeButton: false,
+                            model: 'alert',
+                            btn_ok:   'Close',
+                            contents: res.error + ' (' + res.code + ')'
+                        }).showModal();
+                    }
+                },
+                error: function(d) {
+                    autocompleteBox.find('li').remove();
+                    autocompleteBox.append($(document.createElement('li')).addClass('text').text(d.statusText));
+                }
+            });
+
+        };
+
+        var sendTasks = function() {
+
+            $.ajax({
+                type: 'POST',
+                url : '{{ path('ajax_add_tasks') }}',
+                data: {
+                    ids: tags.join(';'),
+                    date_from: $('#date_from').datepicker('getDate').toUTCString(),
+                    date_to: $('#date_to').datepicker('getDate').toUTCString(),
+                    app_id: '',
+                    app_secret: ''
+                },
+                dataType: 'json',
+                success: function(res) {
+                    if(res.code == 200) {
+                        window.location.replace('{{ url('status') }}');
+                    }
+                    else {
+                        $.fn.SimpleModal({
+                            hideHeader: true,
+                            closeButton: false,
+                            model: 'alert',
+                            btn_ok:   'Close',
+                            contents: res.data.error
+                        }).showModal();
+
+                        searchBtn.text('Search');
+                        searchBtn.data('clicked', 0);
+                    }
+                },
+                error: function(d) {
+                    $.fn.SimpleModal({
+                        hideHeader: true,
+                        closeButton: false,
+                        model: 'alert',
+                        btn_ok:   'Close',
+                        contents: d.statusText
+                    }).showModal();
+
+                    searchBtn.text('Search');
+                    searchBtn.data('clicked', 0);
+                }
+            });
+
+        };
+
+        var appendTag = function(id, name) {
+
+            if(tags.indexOf(parseInt(id)) != -1)
+                return;
+
+            var tag = $(document.createElement('span')).addClass('tag')
+                        .attr('data-id', id);
+
+            if(name.length > 30)
+                name = name.substr(0, 30) + '...';
+
+            tag.append($(document.createElement('span')).addClass('text').text(name));
+            tag.append($(document.createElement('span')).addClass('close'));
+
+            if(tags.length > 0)
+                tag.insertAfter(tagsField.find('span.tag:last'));
+            else
+                tag.prependTo(tagsField);
+
+            tags.push(parseInt(id));
+
+        };
+
+        var removeTag = function(id) {
+            var idx = tags.indexOf(parseInt(id));
+
+            if(idx == -1)
+                return;
+
+            tagsField.find('span.tag[data-id="'+ id +'"]').remove();
+            tags.splice(idx, 1);
+        };
+
+
+        $(function() {
+
+            pageSearchField.on('keyup', function() {
+                var self = $(this);
+                afterDelay(function() {
+                    loadPagesByName(self.val());
+                }, 500);
+            });
+
+            autocompleteBox.delegate('.page', 'click', function(e) {
+                if(e.target.nodeName == 'A' && e.target.parentElement.className == 'title')
+                    return;
+
+                if(tags.length < {{ fs.max_pages_at_once }}) {
+                    appendTag($(this).data('id'), $(this).data('name'));
+                    autocompleteBox.hide();
+                    pageSearchField.val('');
+                } else {
+                    $.fn.SimpleModal({
+                        hideHeader: true,
+                        closeButton: false,
+                        model: 'alert',
+                        btn_ok:   'Close',
+                        contents: 'You can add up to {{ fs.max_pages_at_once }} fanpages per session.'
+                    }).showModal();
+                }
+            });
+
+            tagsField.delegate('span.tag span.close', 'click', function() {
+                removeTag($(this).closest('span.tag').data('id'));
+            });
+
+            tagsField.not('span.tag').on('click', function() {
+                pageSearchField.focus();
+            });
+
+            datepickers.find('input[type="text"]').each(function() {
+                var self = $(this);
+
+                self.datepicker({
+                    showWeek: false,
+                    firstDay: 1,
+                    dateFormat: 'dd/mm/yy',
+                    hideIfNoPrevNext: true
+                });
+            });
+
+            $('#date_to').datepicker('option', 'minDate', $('#date_from').datepicker('getDate'));
+            $('#date_from').datepicker('option', 'maxDate', $('#date_to').datepicker('getDate'));
+
+            searchBtn.on('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                {% if isLogged %}
+                if($(this).data('clicked') == undefined || $(this).data('clicked') == 0) {
+                    $(this).data('clicked', 1);
+
+                    if(tags.length == 0)
+                        return false;
+
+                    sendTasks();
+
+                    $(this).text('Loading...');
+                }
+                {% else %}
+
+                $.fn.SimpleModal({
+                    hideHeader: true,
+                    closeButton: false,
+                    model: 'alert',
+                    btn_ok:   'Close',
+                    contents: 'You should be logged in with your Facebook account, in order to use this service.<br><a href="{{ loginUrl }}" class="btn btn-fb"><span class="icon icon-fb"></span>Login with Facebook</a>'
+                }).showModal();
+
+                {% endif %}
+            });
+
+            $('#date_from').on('change', function() {
+                var selectedDate = $(this).datepicker('getDate');
+                $('#date_to').datepicker('option', 'minDate', selectedDate);
+            });
+
+            $('#date_to').on('change', function() {
+                var selectedDate = $(this).datepicker('getDate');
+                $('#date_from').datepicker('option', 'maxDate', selectedDate);
+            });
+        });
+    </script>
+{% endblock %}

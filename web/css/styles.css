@@ -1,0 +1,746 @@
+@import url(http://fonts.googleapis.com/css?family=Montserrat:400,700);
+
+* { box-sizing: border-box; }
+
+html, body {
+    background: #e4e4f2 url('../img/bg.jpg') no-repeat;
+    background-size: cover;
+    font-family: 'Montserrat', sans-serif;
+}
+
+/**
+  * SPECIFIC
+  */
+
+#main {
+    margin-top: 100px;
+}
+
+#login, #settings {
+    z-index: 999;
+    width: 275px;
+    position: absolute;
+}
+
+#login {
+    right: 0;
+}
+
+#search {
+    float: left;
+    width: 45%;
+    margin-right: 15px;
+}
+
+#datepicker {
+    position: relative;
+    float: left;
+    width: 35%;
+    margin-right: 15px;
+}
+
+#searchButton {
+    float: left;
+    width: 17%;
+}
+
+#searchButton .btn {
+    height: 50px;
+    line-height: 50px;
+    margin-top: 1px;
+}
+
+#statusTitle {
+    color: #626c76;
+    font-size: 26px;
+    text-align: center;
+}
+
+#tasksList {
+    background: #f2f2f2;
+    border-radius: 7px;
+    margin: 35px 0;
+}
+
+#afterTasks {
+    text-align: center;
+}
+
+#afterTasks .new-search {
+    width: 20%;
+    line-height: 50px;
+    display: inline-block;
+    margin-bottom: 40px;
+}
+
+/**
+  * GLOBAL
+  */
+
+.hidden { display: none; }
+
+.content {
+    width: 1000px;
+    margin: 0 auto;
+}
+
+.content:after {
+    clear: both;
+}
+
+.box {
+    position: relative;
+    background: #f2f2f2;
+    border-radius: 7px;
+    margin: 10px 0;
+    padding: 15px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.07);
+    color: #626c76;
+}
+
+/**
+  * BUTTON
+  */
+
+.btn {
+    display: block;
+    font-family: 'Montserrat', sans-serif;
+    border: 0;
+    cursor: pointer;
+    font-size: 16px;
+    text-align: center;
+    border-radius: 7px;
+    line-height: 40px;
+    color: #f2f2f2;
+    text-decoration: none;
+    box-shadow: 0 1px 1px rgba(0,0,0,.07);
+}
+
+.btn.btn-3d {
+    border-bottom: 4px solid;
+}
+
+.btn.btn-3d:active {
+    margin-top: 3px !important;
+    border-bottom: 1px;
+    box-shadow: inset 0 0 30px rgba(0,0,0,.15),
+                inset 0 0 5px  rgba(0,0,0,.25);
+}
+
+button.btn {
+    width: 100%;
+}
+
+.btn.btn-green {
+    background: #7ebfbf;
+}
+
+.btn.btn-green.btn-3d {
+    border-color: #73b0b0;
+}
+
+.btn.btn-green:hover {
+    background: #81c3c3;
+}
+
+.btn.btn-darkgreen {
+    background: #4a808c;
+}
+
+.btn.btn-darkgreen.btn-3d {
+    border-color: #427580;
+}
+
+.btn.btn-darkgreen:hover {
+    background: #4f8895;
+}
+
+.btn.btn-gray {
+    background: #9fb0bf;
+}
+
+.btn.btn-gray.btn-3d {
+    border-color: #8b9caa;
+}
+
+.btn.btn-gray:hover {
+    background: #a6b8c8;
+}
+
+.btn.btn-lightblue {
+    background: #e4e4f2;
+    color: #9fb0bf;
+}
+
+.btn.btn-lightblue.btn-3d {
+    border-color: #d8d8e5;
+}
+
+.btn.btn-lightblue:hover {
+    background: #e9e9f7;
+}
+
+.btn.btn-fb {
+    background: #5c75b0;
+}
+
+.btn.btn-fb:hover {
+    background: #566da4;
+}
+
+/**
+  * FORM
+  */
+
+form .form-row {
+    margin-bottom: 10px;
+}
+
+form .form-row:last-child {
+    margin-bottom: 0;
+}
+
+input[type=text],
+input[type=password] {
+    position: relative;
+    border: 0;
+    border-radius: 7px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+}
+
+.box input[type=text],
+.box input[type=password] {
+    background-color: #e4e4f2;
+    padding: 10px 10px 10px 35px;
+    color: #9fb0bf;
+    width: 100%;
+}
+
+input.icon-eye {
+    background: url(../img/icons/ic_eye.png) no-repeat 10px;
+    background-size: 18px;
+}
+
+input.icon-lock {
+    background: url(../img/icons/ic_lock.png) no-repeat 12px;
+    background-size: auto 18px;
+}
+
+/**
+  * NAVBAR
+  */
+
+.navbar > .content {
+    width: 1150px;
+}
+
+.navbar {
+    position: relative;
+    width: 100%;
+    height: 70px;
+    background: #f2f2f2;
+    vertical-align: middle;
+}
+
+.navbar:after {
+    content: '';
+    clear: both;
+}
+
+.navbar-logo {
+    padding: 25px;
+    color: #626c76;
+    font-weight: normal;
+    font-size: 23px;
+    float: left;
+}
+
+ul.navbar-menu {
+    list-style: outside none none;
+    float: right;
+    margin: 0;
+    padding-left: 0;
+}
+
+ul.navbar-menu > li {
+    position: relative;
+    display: block;
+    float: left;
+    /*padding-bottom: 10px;*/
+}
+
+/*ul.navbar-menu > li:hover > div {
+    display: block;
+}*/
+
+ul.navbar-menu > li > a {
+    position: relative;
+    display: block;
+    text-decoration: none;
+    font-size: 16px;
+    color: #626c76;
+    line-height: 70px;
+    padding: 0 27px;
+}
+
+ul.navbar-menu > li > a:hover {
+    background: #4a808c;
+    color: #fff;
+}
+
+ul.navbar-menu > li > a:hover > .icon-person { background-image: url(../img/icons/ic_person_h.png); }
+ul.navbar-menu > li > a:hover > .icon-settings { background-image: url(../img/icons/ic_settings_h.png); }
+
+/**
+  * RADIO MENU
+  */
+ul.radio {
+    margin-top: -10px;
+}
+
+ul.radio > li {
+    cursor: pointer;
+    line-height: 40px;
+    margin-bottom: 5px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #e4e4f2;
+}
+
+ul.radio > li:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: 0;
+}
+
+ul.radio > li > .selector {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 1px solid #4a808c;
+    border-radius: 50%;
+    margin-right: 15px;
+    vertical-align: middle;
+}
+
+ul.radio > li[data-checked="0"] > .selector { background: #f2f2f2; }
+ul.radio > li[data-checked="1"] > .selector { background: #4a808c; }
+
+ul.radio > li > form {
+    margin-top: 10px;
+}
+
+.navbar .user-photo {
+    display: inline-block;
+    vertical-align: middle;
+    border-radius: 50%;
+    margin-left: 10px;
+    width: 50px;
+    height: 50px;
+}
+
+.navbar .dropdown a:not(.btn) {
+    color: #626c76;
+    text-decoration: none;
+    display: block;
+    width: 100%;
+    line-height: 25px;
+    vertical-align: middle;
+}
+
+.navbar .dropdown a.logout {
+    background: url("../img/icons/ic_power.png") no-repeat left center;
+    padding-left: 30px;
+}
+
+/**
+  * ICONS
+  */
+
+.icon {
+    vertical-align: middle;
+    margin-right: 5px;
+    width: 30px;
+    height: 30px;
+    display: inline-block;
+    background-size: 30px 30px;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.icon-person { background-image: url(../img/icons/ic_person.png); margin-left: 5px; margin-right: 0; }
+.icon-settings { background-image: url(../img/icons/ic_settings.png); margin-left: 5px; margin-right: 0; }
+.icon-fb {
+    background-image: url(../img/icons/ic_fb.png);
+    background-size: 20px 20px;
+    margin-right: 0;
+}
+
+.icon-input {
+    position: absolute;
+    left: 0;
+    width: 50px;
+    height: 100%;
+    display: inline-block;
+    border-top-left-radius: 7px;
+    border-bottom-left-radius: 7px;
+    background: #9fb0bf no-repeat center;
+    background-size: 50%;
+    box-shadow: 0 1px 1px rgba(0,0,0,.07);
+    float: left;
+}
+.icon-input.loupe {
+    background-image: url(../img/icons/ic_search.png);
+}
+.icon-input.calendar {
+    background-image: url(../img/icons/ic_calendar.png);
+}
+
+.tags-field {
+    position: relative;
+    width: 100%;
+    min-height: 50px;
+    background: #f2f2f2;
+    border-radius: 7px;
+    box-shadow: 0 1px 1px rgba(0,0,0,.07);
+}
+
+.tags-field > .tags {
+    display: inline-block;
+    height: 100%;
+    padding: 10px 10px 0;
+    margin-left: 50px;
+    margin-bottom: 10px;
+    width: 89%;
+}
+
+.tags-field > .tags span.tag {
+    display: inline-block;
+    height: 30px;
+    background: #e4e4f2;
+    border-radius: 7px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+}
+
+.tags-field > .tags span.tag span.text {
+    display: inline-block;
+    padding: 7px 20px;
+    color: #626c76;
+}
+
+.tags-field > .tags span.tag span.close {
+    background: #4a808c url(../img/icons/ic_cross.png) no-repeat center;
+    background-size: 10px;
+    border-top-left-radius: 7px;
+    border-bottom-left-radius: 7px;
+    width: 37px;
+    height: 100%;
+    cursor: pointer;
+    float: left;
+}
+
+.tags-field > .tags span.tag span.close:hover {
+    background-color: #54909e;
+}
+
+.tags-field > .tags span.tag span.close:after {
+    clear: both;
+}
+
+.tags-field > .tags input[type=text] {
+    height: 30px;
+    display: inline-block;
+    background: transparent;
+    color: #626c76;
+}
+
+.tags-field > .autocomplete {
+    position: absolute;
+    left: 50px;
+    right: 0;
+    padding: 0;
+}
+
+.tags-field > .autocomplete > ul:after {
+    clear: both;
+}
+
+.tags-field > .autocomplete > ul > li {
+    display: block;
+    padding: 10px;
+    border-bottom: 1px solid #e4e4f2;
+    cursor: pointer;
+}
+
+.tags-field > .autocomplete > ul > li:hover {
+    background: #f6f6f6;
+}
+
+.tags-field > .autocomplete > ul > li:first-child {
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+}
+
+.tags-field > .autocomplete > ul > li:last-child {
+    border-bottom-left-radius: 7px;
+    border-bottom-right-radius: 7px;
+    border-bottom: 0;
+}
+
+.tags-field > .autocomplete > ul > li.text {
+    cursor: default;
+}
+
+.tags-field > .autocomplete > ul > li .photo,
+.task > .content > .page > .photo {
+    display: inline-block;
+    width: 70px;
+    height: 70px;
+}
+
+.tags-field > .autocomplete > ul > li .photo img,
+.task > .content > .page > .photo img {
+    width: 100%;
+    height: 100%;
+    border-radius: 5px;
+}
+
+.tags-field > .autocomplete > ul > li .data,
+.task > .content > .page > .data {
+    display: inline-block;
+    vertical-align: top;
+    margin-left: 10px;
+}
+
+.tags-field > .autocomplete > ul > li:after,
+.tags-field > .autocomplete > ul > li .data:after {
+    clear: both;
+}
+
+.tags-field > .autocomplete > ul > li .data > span,
+.tags-field > .autocomplete > ul > li .data > span a,
+.task > .content > .page > .data > span,
+.task > .content > .page > .data > span a {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.tags-field > .autocomplete > ul > li .data > span.title,
+.tags-field > .autocomplete > ul > li .data > span.title a,
+.task > .content > .page > .data > span.title,
+.task > .content > .page > .data > span.title a { font-size: 18px; }
+
+.tags-field > .autocomplete > ul > li .data > span.title a,
+.task > .content > .page a {
+    color: #626c76;
+    text-decoration: none;
+}
+
+.tags-field > .autocomplete > ul > li .data > span.title:hover a,
+.task > .content > .page span.title:hover a {
+    color: #7C8894;
+}
+
+.tags-field > .autocomplete > ul > li .data > span.cat,
+.task > .content > .page > .data > span.cat { font-size: 12px; font-style: italic; }
+
+.tags-field > .autocomplete > ul > li .data > span.stats,
+.task > .content > .page > .data > span.stats { font-size: 13px; }
+
+.datepickers {
+    position: relative;
+    border-radius: 7px;
+    box-shadow: 0 1px 1px rgba(0,0,0,.07);
+}
+
+.datepickers > .fields {
+    margin-left: 50px;
+}
+
+.datepickers > .fields div,
+.datepickers > .fields input {
+    display: inline-block;
+    height: 50px;
+    border-radius: 0;
+}
+
+.datepickers > .fields input {
+    width: 120px;
+    text-align: center;
+    color: #626c76;
+    background: #f2f2f2;
+}
+
+.datepickers > .fields input:last-child {
+    border-top-right-radius: 7px;
+    border-bottom-right-radius: 7px;
+}
+
+.datepickers > .fields .separator {
+    width: 50px;
+    height: 50px;
+    background: #d6d6e2;
+    color: #626c76;
+    font-size: 22px;
+    padding: 12px 0;
+    text-align: center;
+}
+
+/* JQUERY UI DATEPICKER */
+
+.ui-datepicker {
+    background: #f2f2f2;
+    padding: 0 !important;
+    margin-top: 10px;
+    border-radius: 7px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.07);
+}
+
+.ui-datepicker-header {
+    background: #4a808c;
+    color: #f2f2f2;
+    font-size: 16px;
+    padding: 15px 0 !important;
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+}
+
+.ui-datepicker .ui-datepicker-prev,
+.ui-datepicker .ui-datepicker-next {
+    top: 15px;
+}
+
+.ui-datepicker .ui-datepicker-prev {
+    background: url(../img/icons/ic_arrow_left.png) no-repeat center;
+    background-size: 80%;
+    left: 15px;
+}
+
+.ui-datepicker .ui-datepicker-next {
+    background: url(../img/icons/ic_arrow_right.png) no-repeat center;
+    background-size: 80%;
+    right: 15px;
+}
+
+.ui-datepicker-calendar > thead {
+    display: none;
+}
+
+.ui-datepicker-calendar > tbody td {
+    padding: 5px;
+}
+
+.ui-datepicker-calendar > tbody td > a {
+    text-align: center;
+    color: #949aa1;
+    font-size: 16px;
+}
+
+.ui-datepicker-calendar > tbody td a:hover {
+    color: #a4aab2;
+}
+
+.ui-datepicker-calendar > tbody td.ui-datepicker-current-day a {
+    background: #7ebfbf;
+    color: #f2f2f2;
+    border-radius: 50%;
+}
+
+/* TASKS (STATUS) */
+.task {
+    position: relative;
+    padding: 15px;
+    color: #626c76;
+}
+
+.task:before {
+    content: '';
+    display: table;
+}
+
+.task:after {
+    content: '';
+    display: table;
+    clear: both;
+}
+
+.task .btn {
+    display: inline-block;
+    line-height: 50px;
+}
+
+.task .btn.download {
+    width: 100%;
+}
+
+.task .btn.delete {
+    width: 50px;
+    height: 50px;
+    /*display: none;*/
+    opacity: 0;
+    margin: 10px;
+    background-image: url(../img/icons/ic_cross_big.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 50%;
+    vertical-align: middle;
+}
+
+.task .btn.delete-confirm {
+    width: 100px;
+    display: none;
+}
+
+.task:hover .btn.delete {
+    opacity: 1;
+}
+
+.task > .content > div {
+    float: left;
+}
+
+.task > .content > .page {
+    width: 44%;
+}
+
+.task > .content > .action {
+    width: 24%;
+    text-align: center;
+    line-height: 70px;
+}
+
+.task > .content > .action > .text {
+    display: inline-block;
+    background: #d9d9e7;
+    border-radius: 7px;
+    width: 100%;
+    line-height: 50px;
+}
+
+.task > .content > .status {
+    width: 32%;
+    text-align: left;
+    line-height: 70px;
+}
+
+.task:after {
+    clear:both;
+}
+
+.task.active {
+    background: #cee2f3;
+}
+
+/**
+  * SIMPLE MODAL CUSTOM
+  */
+.simple-modal {
+    font-family: 'Montserrat', sans-serif !important;
+    font-size: 14px !important;
+}
+.simple-modal .simple-modal-body a.btn-fb {
+    margin-top: 10px;
+    width: 66%;
+    margin-left: auto; margin-right: auto;
+}
