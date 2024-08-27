@@ -3,11 +3,11 @@
 Product demo: https://youtu.be/_3DzQB_G2jU<br>
 Comparison with the best software of this type on the market: https://youtu.be/1tFUb-WsaTM
 
-Fanstealer X
+## Fanstealer X
 ============
 Based on Silex Framework
 
-Installation
+## Installation
 ============
 1. Upload files to server.
 2. The public folder is /web, so map the domain to /web.
